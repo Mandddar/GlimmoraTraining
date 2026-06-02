@@ -1,12 +1,20 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from fastapi.middleware.cors import CORSMiddleware
 from database import engine, get_db
 from models import Base, Student
 from schemas import StudentCreate, StudentResponse, StudentUpdate, RecommendationResponse
 from ai_service import generate_recommendation
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 Base.metadata.create_all(bind=engine)
 
@@ -92,6 +100,11 @@ def delete_student(
     return {
         "message": f"Student {student_id} deleted successfully"
     }
+
+@app.get("/students")
+def get_students(db: Session = Depends(get_db)):
+    students = db.query(Student).all()
+    return students
 
 @app.post(
     "/student/{student_id}/recommendation",

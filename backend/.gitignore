@@ -15,3 +15,16 @@ __pycache__/
 # IDE
 .vscode/
 .idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+
+# Secrets
+.env
+
+# Frontend
+node_modules/
