@@ -43,34 +43,6 @@
   --shadow-lg: 0 20px 60px rgba(15, 23, 42, 0.2);
 }
 
-.dark {
-  --bg-primary: #090d16;
-  --bg-secondary: #0f172a;
-  --bg-workspace: linear-gradient(135deg, #090d16 0%, #0f172a 100%);
-  --bg-card: #1e293b;
-  --bg-panel: #1e293b;
-  --bg-input: #0f172a;
-  --bg-input-focus: #111827;
-  --bg-hover: #1e293b;
-  --bg-action-btn: #1e293b;
-
-  --text-primary: #f8fafc;
-  --text-secondary: var(--color-slate-300);
-  --text-muted: var(--color-slate-500);
-  --text-label: var(--color-slate-200);
-
-  --border-color: #334155;
-  --border-hover: #475569;
-
-  --overlay-bg: rgba(0, 0, 0, 0.6);
-  --badge-bg: var(--color-slate-800);
-  --badge-text: var(--color-slate-200);
-
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
-}
-
 * {
   box-sizing: border-box;
 }

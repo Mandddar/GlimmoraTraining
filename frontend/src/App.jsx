@@ -17,20 +17,6 @@ function App() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [loadingId, setLoadingId] = useState(null);
   const [editingStudent, setEditingStudent] = useState(null);
-  const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved) return saved;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  });
-
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
-  }, [theme]);
 
   const fetchStudents = async () => {
     try {
@@ -41,6 +27,10 @@ function App() {
       toast.error("Failed to load students.");
     }
   };
+
+  useEffect(() => {
+    document.documentElement.classList.remove("dark");
+  }, []);
 
   useEffect(() => {
     fetchStudents();
@@ -103,13 +93,6 @@ function App() {
             <h1>Student Workspace</h1>
             <p>Manage records, generate AI insights, and track student growth.</p>
           </div>
-          <button
-            className="theme-toggle-btn"
-            onClick={() => setTheme((prev) => (prev === "light" ? "dark" : "light"))}
-            aria-label="Toggle theme"
-          >
-            {theme === "light" ? "🌙 " : "☀️ "}
-          </button>
         </header>
 
         <div className="workspace-controls">
