@@ -1,45 +1,25 @@
-import { useState } from "react";
-
-function RecommendationModal({
-  isOpen,
-  onClose,
-  recommendation,
-}) {
+﻿function ReccomendationModel({ isOpen, onClose, recommendation }) {
   if (!isOpen) return null;
 
   return (
-    <div style={overlayStyle}>
-      <div style={modalStyle}>
-        <h2>AI Study Recommendation</h2>
+    <div className="modal-overlay" role="dialog" aria-modal="true">
+      <div className="modal-window">
+        <div className="modal-header-bar">
+          <div>
+            <p className="eyebrow">AI Recommendation</p>
+            <h3>Study Recommendation</h3>
+          </div>
+          <button className="modal-close" onClick={onClose} aria-label="Close modal">
+            ×
+          </button>
+        </div>
 
-        <p>{recommendation}</p>
-
-        <button onClick={onClose}>
-          Close
-        </button>
+        <div className="modal-content">
+          <p>{recommendation}</p>
+        </div>
       </div>
     </div>
   );
 }
 
-const overlayStyle = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  backgroundColor: "rgba(0,0,0,0.5)",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-};
-
-const modalStyle = {
-  background: "white",
-  padding: "20px",
-  borderRadius: "10px",
-  width: "500px",
-  maxWidth: "90%",
-};
-
-export default RecommendationModal;
+export default ReccomendationModel;

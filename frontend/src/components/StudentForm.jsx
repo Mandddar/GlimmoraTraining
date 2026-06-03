@@ -1,5 +1,5 @@
-
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import api from "../services/api";
 
 function StudentForm({ onStudentAdded, editingStudent, onEditCancelled }) {
@@ -37,13 +37,11 @@ function StudentForm({ onStudentAdded, editingStudent, onEditCancelled }) {
 
     try {
       if (editingStudent) {
-        // Update existing student
         await api.put(`/student/${editingStudent.id}`, formData);
-        alert("Student Updated");
+        onStudentAdded("Student updated successfully");
       } else {
-        // Create new student
         await api.post("/student", formData);
-        alert("Student Added");
+        onStudentAdded("Student added successfully");
       }
 
       setFormData({
@@ -52,13 +50,12 @@ function StudentForm({ onStudentAdded, editingStudent, onEditCancelled }) {
         course: "",
       });
 
-      onStudentAdded();
-
       if (editingStudent) {
         onEditCancelled();
       }
     } catch (error) {
       console.error(error);
+      toast.error("Unable to save student. Please try again.");
     }
   };
 
@@ -72,41 +69,66 @@ function StudentForm({ onStudentAdded, editingStudent, onEditCancelled }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        name="name"
-        placeholder="Name"
-        value={formData.name}
-        onChange={handleChange}
-        required
-      />
+    <section className="card card-form">
+      <div className="card-header">
+        <div>
+          <p className="eyebrow">Student Profile</p>
+          <h2>{editingStudent ? "Update Student" : "Add Student"}</h2>
+          <p className="form-copy">
+            {editingStudent
+              ? "Edit student details and save changes."
+              : "Add a new student record to the dashboard."}
+          </p>
+        </div>
+      </div>
 
-      <input
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-        required
-      />
+      <form className="form-grid" onSubmit={handleSubmit}>
+        <label className="field-group">
+          <span>Name</span>
+          <input
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Enter student name"
+            required
+          />
+        </label>
 
-      <input
-        name="course"
-        placeholder="Course"
-        value={formData.course}
-        onChange={handleChange}
-        required
-      />
+        <label className="field-group">
+          <span>Email</span>
+          <input
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter student email"
+            required
+          />
+        </label>
 
-      <button type="submit">
-        {editingStudent ? "Update Student" : "Add Student"}
-      </button>
+        <label className="field-group">
+          <span>Course</span>
+          <input
+            name="course"
+            value={formData.course}
+            onChange={handleChange}
+            placeholder="Enter course name"
+            required
+          />
+        </label>
 
-      {editingStudent && (
-        <button type="button" onClick={handleCancel}>
-          Cancel
-        </button>
-      )}
-    </form>
+        <div className="form-actions">
+          <button type="submit" className={editingStudent ? "btn-green" : "btn-blue"}>
+            {editingStudent ? "Update Student" : "Add Student"}
+          </button>
+          {editingStudent && (
+            <button type="button" className="btn-gray" onClick={handleCancel}>
+              Cancel Edit
+            </button>
+          )}
+        </div>
+      </form>
+    </section>
   );
 }
 
