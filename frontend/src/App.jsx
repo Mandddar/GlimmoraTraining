@@ -1,14 +1,18 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CreateStudentPanel from "./components/CreateStudentPanel";
 import StudentCard from "./components/StudentCard";
 import StudentForm from "./components/StudentForm";
 import RecommendationPanel from "./components/RecommendationPanel";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./components/Login";
+import Register from "./components/Register";
 import api from "./services/api";
 import "./App.css";
 
-function App() {
+function StudentDashboard() {
   const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -18,19 +22,23 @@ function App() {
   const [loadingId, setLoadingId] = useState(null);
   const [editingStudent, setEditingStudent] = useState(null);
 
+  const navigate = useNavigate();
+
+  // Retrieve current user details from localStorage
+  const userJson = localStorage.getItem("user");
+  const currentUser = userJson ? JSON.parse(userJson) : { username: "User", email: "" };
+
   const fetchStudents = async () => {
     try {
       const response = await api.get("/students");
       setStudents(response.data);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to load students.");
+      if (error.response?.status !== 401) {
+        toast.error("Failed to load students.");
+      }
     }
   };
-
-  useEffect(() => {
-    document.documentElement.classList.remove("dark");
-  }, []);
 
   useEffect(() => {
     fetchStudents();
@@ -81,6 +89,13 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    toast.info("Logged out successfully");
+    navigate("/login");
+  };
+
   const filteredStudents = students.filter((student) =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -92,6 +107,28 @@ function App() {
           <div>
             <h1>Student Workspace</h1>
             <p>Manage records, generate AI insights, and track student growth.</p>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px" }}>
+            <div style={{ fontSize: "0.9rem", color: "var(--text-secondary)", textAlign: "right" }}>
+              Logged in as: <strong style={{ color: "var(--text-primary)" }}>{currentUser.username}</strong>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{currentUser.email}</div>
+            </div>
+            <button 
+              className="btn-gray" 
+              onClick={handleLogout} 
+              style={{ 
+                padding: "6px 12px", 
+                borderRadius: "6px", 
+                fontSize: "0.85rem", 
+                cursor: "pointer",
+                fontWeight: "600",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px"
+              }}
+            >
+              <span>🚪</span> Logout
+            </button>
           </div>
         </header>
 
@@ -156,14 +193,36 @@ function App() {
         recommendation={recommendationText}
         studentName={selectedStudent?.name}
       />
+    </div>
+  );
+}
 
+function App() {
+  useEffect(() => {
+    document.documentElement.classList.remove("dark");
+  }, []);
+
+  return (
+    <>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
       <ToastContainer
         theme="colored"
         position="bottom-right"
         autoClose={2800}
         hideProgressBar={false}
       />
-    </div>
+    </>
   );
 }
 

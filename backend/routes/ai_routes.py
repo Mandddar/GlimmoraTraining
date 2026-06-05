@@ -5,6 +5,8 @@ from database import get_db
 from services.ai_service import generate_recommendation
 from services.student_service import get_student_service
 from schemas import RecommendationResponse
+from models import User
+from services.auth_service import get_current_user
 
 router = APIRouter(tags=["AI"])
 
@@ -14,8 +16,9 @@ router = APIRouter(tags=["AI"])
 )
 def get_recommendation(
     student_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    student = get_student_service(student_id, db)
+    student = get_student_service(student_id, db, current_user.id)
     recommendation = generate_recommendation(student)
     return {"recommendation": recommendation}

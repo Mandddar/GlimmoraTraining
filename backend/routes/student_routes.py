@@ -7,6 +7,8 @@ from schemas import (
     StudentUpdate,
     StudentResponse
 )
+from models import User
+from services.auth_service import get_current_user
 
 from services.student_service import (
     create_student_service,
@@ -24,9 +26,10 @@ router = APIRouter(tags=["Students"])
 )
 def create_student(
     student: StudentCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    return create_student_service(student, db)
+    return create_student_service(student, db, current_user.id)
 
 
 @router.get(
@@ -35,9 +38,10 @@ def create_student(
 )
 def get_student(
     student_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    return get_student_service(student_id, db)
+    return get_student_service(student_id, db, current_user.id)
 
 
 @router.get(
@@ -45,9 +49,10 @@ def get_student(
     response_model=list[StudentResponse]
 )
 def get_students(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    return get_all_students_service(db)
+    return get_all_students_service(db, current_user.id)
 
 
 @router.put(
@@ -57,9 +62,10 @@ def get_students(
 def update_student(
     student_id: int,
     updated_student: StudentUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    return update_student_service(student_id, updated_student, db)
+    return update_student_service(student_id, updated_student, db, current_user.id)
 
 
 @router.delete(
@@ -67,6 +73,7 @@ def update_student(
 )
 def delete_student(
     student_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    return delete_student_service(student_id, db)
+    return delete_student_service(student_id, db, current_user.id)
