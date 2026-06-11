@@ -10,7 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import api from "./services/api";
-import "./App.css";
+import "./app.css";
 
 function StudentDashboard() {
   const [students, setStudents] = useState([]);
