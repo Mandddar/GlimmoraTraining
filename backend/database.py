@@ -1,4 +1,5 @@
 import os
+import ssl
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -11,7 +12,16 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL is not set. Add it to backend/.env or set it in the environment.")
 
-engine = create_engine(DATABASE_URL)
+connect_args = {}
+if "aivencloud" in DATABASE_URL:
+    connect_args = {
+        "ssl": {
+            "check_hostname": False,
+            "cert_reqs": ssl.CERT_NONE
+        }
+    }
+
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 
 SessionLocal = sessionmaker(
     autocommit=False,
