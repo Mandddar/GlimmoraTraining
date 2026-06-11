@@ -1,8 +1,11 @@
 import axios from "axios";
 
+import axios from "axios";
+
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000",
+  baseURL: import.meta.env.VITE_API_URL || "http://127.0.0.1:8000",
 });
+
 
 // Request interceptor to attach JWT token
 api.interceptors.request.use(
@@ -26,7 +29,7 @@ api.interceptors.response.use(
       // Clean up invalid/expired auth state
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      
+
       // Redirect to login page if we aren't already there
       if (!window.location.pathname.endsWith("/login")) {
         window.location.href = "/login";
